@@ -31,7 +31,7 @@ def rep_manage(node_list,i,block,limit):
         if block['safe']==True:
             # 打包数据安全可靠，接受打包，节点获取对应代币，声誉提高
             node_list[i]['wallet']+=block['fee']*node_list[i]['rep']/100
-            node_list[i]['rep']+=block['size']/limit
+            node_list[i]['rep']+=1
             if node_list[i]['rep']>100:
                 node_list[i]['rep']=100
             acce=True
