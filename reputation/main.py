@@ -49,7 +49,7 @@ def main():
     limit=1e6
     head=80
     num=10
-    block_num=400
+    block_num=600
     nodelist = None
     total_fee=0
     total_wallet=0
@@ -79,12 +79,10 @@ def main():
         reputation.append(n['rep'])
     print('--------------------')
     print('总结：')
-    print(total_fee,total_wallet)
-    print('system earned:',total_fee-total_wallet)
-    print(total_trade,'trade has been successfully traded.')
-    print('with',block_num,'block generated.')
-    print('reputation:',np.min(reputation),np.mean(reputation),np.max(reputation))
-    print('variance reputation:',np.var(reputation))
+    print('被打包交易总交易费:',total_fee,'\n打包节点总赚取交易费:',total_wallet,'\n系统赚取:',total_fee-total_wallet)
+    print('完成了',total_trade,'个交易，共生成',block_num,'个区块。')
+    print('reputation(最小值，平均值，最大值): (',np.min(reputation),np.mean(reputation),np.max(reputation),')')
+    print('声誉方差:',np.var(reputation))
     print(nodelist)
 
 if __name__ == '__main__':
