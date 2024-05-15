@@ -146,6 +146,12 @@ def pack_and_mine(clouds, miners, transaction_pool):
 
 # 生成节点
 users, clouds, miners = generate_nodes(20, 4, 10, 2)
+for user in users:
+    print(user)
+for cloud in clouds:
+    print(cloud)
+for miner in miners:
+    print(miner)
 
 # 生成交易
 transaction_pool = generate_transactions(users)
