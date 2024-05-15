@@ -1,9 +1,10 @@
 import random
+import matplotlib.pyplot as plt
 
 class PackingNode:
     def __init__(self):
         self.main_wallet = 0  # 主钱包
-        self.staking_wallet = 0  # 质押钱包
+        self.pledge_wallet = 0  # 质押钱包
         self.reputation = 50  # 初始声誉值
 
     def pack(self, transaction_fee):
@@ -13,17 +14,17 @@ class PackingNode:
         if self.reputation < 100:
             # 声誉值未达到100时，按比例分配交易费
             self.main_wallet += transaction_fee * (self.reputation / 100)
-            self.staking_wallet += transaction_fee * (1 - self.reputation / 100)
+            self.pledge_wallet += transaction_fee * (1 - self.reputation / 100)
         else:
-            # 声誉值达到100后，全部交易费进入质押钱包，并转移1%到主钱包
-            self.staking_wallet = self.staking_wallet * 0.99
-            self.main_wallet += transaction_fee + self.staking_wallet * 0.01
+            # 声誉值达到100后，全部交易费进入主钱包，并转移1%到主钱包
+            self.main_wallet += transaction_fee + self.pledge_wallet * 0.05
+            self.pledge_wallet = self.pledge_wallet * 0.95
 
         # 每次打包增加声誉值
         self.reputation = min(self.reputation + 1, 100)
 
     def __str__(self):
-        return f"Main Wallet: {self.main_wallet}, Staking Wallet: {self.staking_wallet}, Reputation: {self.reputation}"
+        return f"Main Wallet: {self.main_wallet}, Staking Wallet: {self.pledge_wallet}, Reputation: {self.reputation}"
 
 def generate_transactions(expected_fee):
     """
@@ -46,12 +47,30 @@ def packing_simulation(node_count,expected_fee):
     return nodes, transaction_count, total_fee
 
 # 模拟打包过程
-node_count = 10
-expected_fee = 10
-r=500
+node_count = 1
+expected_fee = 1
+r=60
 nodes = [PackingNode() for _ in range(node_count)]
+main_w=[]
+p_w=[]
+rep=[]
+x=[]
 for i in range(r): 
     nodes,transaction_count,total_fee = packing_simulation(node_count,expected_fee)
-    print('round',r)
+    print('round',i)
     for node in nodes:
         print(node)
+        main_w.append(node.main_wallet)
+        p_w.append(node.pledge_wallet)
+        rep.append(node.reputation)
+    x.append(i+1)
+
+fig,ax1=plt.subplots()
+
+ax1.plot(x,rep,'c',label="reputation")
+
+ax2=ax1.twinx()
+ax2.plot(x,p_w,label='pledge wallet')
+ax2.plot(x,main_w,label='main wallet')
+fig.legend(loc='upper left')
+plt.show()
