@@ -10,7 +10,7 @@ def main():
     #I
     num=20
     # l=[0.2,0.5,0.8,1.2,1.6,2,3,4,5,6,7,8,9,10]
-    l=[2,4,6,8]
+    l=[1,2,3,4,5,6,7,8]
     x=x_init(2,num)
 
     print(x)
@@ -43,14 +43,14 @@ def main():
     plt.ylim(0,1)
     plt.show()
 
-    fig,al=plt.subplots()
-    al.bar(l,a_res,color="peru")
-    al.set_xlabel('beta')
-    al.set_ylabel('alpha')
-
-    xl=al.twinx()
-    xl.plot(l,xm_res,'Db--')
+    fig,xl=plt.subplots()
+    xl.bar(l,xm_res,width=0.5)
+    xl.set_xlabel('beta')
     xl.set_ylabel('average x')
+    plt.ylim(0.2,0.8)
+    al=xl.twinx()
+    al.plot(l,a_res,color="peru",marker='.',markersize=15,markerfacecolor='w')
+    al.set_ylabel('alpha')
 
     plt.show()
     print('\n',xm_res,'\n',a_res)
