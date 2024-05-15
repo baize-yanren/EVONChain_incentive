@@ -68,7 +68,7 @@ for i in range(r):
 fig,ax1=plt.subplots()
 
 ax1.plot(x,rep,'c',label="reputation")
-
+plt.ylim(50,105)
 ax2=ax1.twinx()
 ax2.plot(x,p_w,label='pledge wallet')
 ax2.plot(x,main_w,label='main wallet')
