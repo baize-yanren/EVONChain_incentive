@@ -131,8 +131,9 @@ class function:
             while recipient == sender:
                 recipient = random.choice(users)
             amount = random.randint(1, 100)
-            fee = random.uniform(0, 10)
+            fee = random.choice([4,6,8,12])
             size=random.uniform(1000,20000)#1kb-20kb
+            fee=fee*size/10000
             transaction = Transaction(sender, recipient, size, amount, fee)
             # print(transaction)
             sender.send_transaction(transaction,amount, fee)
@@ -179,15 +180,15 @@ beta=2
 # 生成节点
 users, clouds, miners = f.generate_nodes(20, 1, 10, beta)
 
-# 生成交易
-transaction_pool = f.generate_transactions(users,5000)
-
 mw=[]
 pw=[]
 rep=[]
 x=[]
-# 打包和挖矿
+
 for i in range(50):
+    # 生成交易
+    transaction_pool = f.generate_transactions(users,500)
+    # 打包和挖矿
     blockchain.append(f.pack_and_mine(clouds, miners, transaction_pool, alpha))
     for cloud in clouds:
         mw.append(cloud.main_wallet)
