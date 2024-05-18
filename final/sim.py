@@ -58,8 +58,8 @@ class CloudNode:
             self.pledge_wallet += transaction_fee * (1 - self.reputation / 100)
         else:
             # 声誉值达到100后，全部交易费进入主钱包，并转移1%到主钱包
-            self.main_wallet += transaction_fee + self.pledge_wallet * 0.05
-            self.pledge_wallet = self.pledge_wallet * 0.95
+            self.main_wallet += transaction_fee + self.pledge_wallet * 0.01
+            self.pledge_wallet = self.pledge_wallet * 0.99
 
         self.reputation = min(self.reputation + 1, 100)
 
@@ -100,6 +100,7 @@ class UserNode:
         if self.wallet >= amount + fee:
             self.wallet -= amount + fee
             transaction.recipient.receive_transaction(amount)
+        return True
 
     def receive_transaction(self, amount):
         """
@@ -136,8 +137,8 @@ class function:
             fee=fee*size/10000
             transaction = Transaction(sender, recipient, size, amount, fee)
             # print(transaction)
-            sender.send_transaction(transaction,amount, fee)
-            transaction_pool.append(transaction)
+            if sender.send_transaction(transaction,amount, fee):
+                transaction_pool.append(transaction)
         return transaction_pool
 
     def pack_and_mine(clouds, miners, transaction_pool, alpha):
@@ -185,7 +186,7 @@ pw=[]
 rep=[]
 x=[]
 
-for i in range(50):
+for i in range(100):
     # 生成交易
     transaction_pool = f.generate_transactions(users,500)
     # 打包和挖矿
@@ -206,6 +207,24 @@ for miner in miners:
 print(len(blockchain),len(transaction_pool))
 
 # 作图
+# 比例
+mwd=[mw[0]]
+pwd=[pw[0]]
+for i in range(1,100):
+    mwd.append(mw[i]-mw[i-1])
+    pwd.append(pw[i]-pw[i-1])
+plt.bar(x,mwd,width=-1,label='main wallet',edgecolor='grey',zorder=5,align='edge')
+plt.bar(x,pwd,width=-1,bottom=mwd,label='pledge wallet',edgecolor='grey',zorder=5,align='edge')
+plt.tick_params(axis='x',length=0)
+plt.grid(axis='y',alpha=0.5,ls='--')
+plt.ylim(0,1600)
+plt.xlim(0,50)
+plt.legend(loc='upper left')
+# plt.tight_layout()
+# plt.savefig('bar1.png', dpi=600)
+plt.show()
+
+# 折线
 fig,ax1=plt.subplots()
 
 ax1.plot(x,rep,'c',label="reputation")
