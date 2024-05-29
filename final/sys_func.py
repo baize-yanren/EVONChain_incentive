@@ -12,6 +12,17 @@
 import random
 from sys_node import *
 
+def miner_chooce(miners):
+    '''
+    权重随机选择一个矿工节点
+    '''
+    total_hash_power = 0
+    for miner in miners:
+        total_hash_power+=miner.hashing_investment
+    miners_probabilities = [miner.hashing_investment / total_hash_power for miner in miners]
+    selected_miner = random.choices(miners, weights=miners_probabilities, k=1)
+    return selected_miner[0]
+
 def generate_nodes(user_count, cloud_count, miner_count, gamma):
     """
     生成指定数量的用户节点、云节点和矿工节点
@@ -63,7 +74,8 @@ def pack_and_mine(clouds, miners, transaction_pool, alpha):
     """
     # 云节点选择最有利的交易进行打包
     packer = random.choice(clouds)
-    miner = random.choice(miners)
+    # 修改矿工算力投入
+    miner = miner_chooce(miners)
     sum_size = 0
     sum_fee = 0
     limit_size = 1000000
@@ -71,15 +83,18 @@ def pack_and_mine(clouds, miners, transaction_pool, alpha):
     i=0
     blocklist = []
     while sum_size<limit_size and i!=num:
-        t=packer.pack(transaction_pool, random.choice(miners))
-        if sum_size+t.size<limit_size:
-            sum_size+=t.size
-            sum_fee += t.fee
-            transaction_pool.remove(t)
-            blocklist.append(t)
-            i+=1
-        else:
+        t=packer.pack(transaction_pool)
+        if t==None:
             break
+        else:
+            if sum_size+t.size<limit_size:
+                sum_size+=t.size
+                sum_fee += t.fee
+                transaction_pool.remove(t)
+                blocklist.append(t)
+                i+=1
+            else:
+                break
 
     block=Block(i,sum_size,sum_fee,blocklist)
     # print(block)

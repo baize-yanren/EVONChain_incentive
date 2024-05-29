@@ -35,7 +35,7 @@ def incentive_allocation(num,gamma,x,test_mode=False):
     round=0
     Thres=0.03
     DIF=0
-    Dp=1000
+    DpT=20
     M=np.ones(num)
     q=0
     T=20
@@ -43,10 +43,11 @@ def incentive_allocation(num,gamma,x,test_mode=False):
         #对集合I中的每个i
         for i in range(num):
             q=np.sum(x[:i])+np.sum(x[i+1:])
-            M[i]=np.sqrt(gamma/q)*Dp/T
+            M[i]=(np.sqrt(gamma/q)*DpT)
             x[i]=np.sqrt(M[i]*q/gamma)-q
             if(x[i]<=0):
                 x[i]=0
+
         DIF=variance(M)
         round+=1
 

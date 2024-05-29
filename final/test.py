@@ -26,6 +26,18 @@ def test_tstp():
         print('after pack:',len(transaction_pool))
         print(block)
     
+def miner_chooce():
+    '''
+    矿工选择
+    测试完成
+    '''
+    users, clouds, miners = f.generate_nodes(20, 1, 10, 1)
+    total_hash_power = 0
+    for miner in miners:
+        total_hash_power+=miner.hashing_investment
+    miners_probabilities = [miner.hashing_investment / total_hash_power for miner in miners]
+    selected_miner = random.choices(miners, weights=miners_probabilities, k=1)
+    return selected_miner[0]
 
 if __name__ == '__main__':
-    test_tstp()
+    print(miner_chooce())

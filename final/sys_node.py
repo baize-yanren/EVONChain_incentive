@@ -46,13 +46,16 @@ class CloudNode:
         self.pledge_wallet = 0  # 质押钱包
         self.reputation = 50  # 初始声誉值
 
-    def pack(self, transaction_pool, miner_node):
+    def pack(self, transaction_pool):
         """
         从交易池中选择最有利的交易并打包
         """
         # 选择交易费最高、交易大小最小的交易
-        most_beneficial_transaction = max(transaction_pool, key=lambda tx: tx.fee / tx.size)
-        return most_beneficial_transaction
+        if transaction_pool:
+            most_beneficial_transaction = max(transaction_pool, key=lambda tx: tx.fee / tx.size)
+            return most_beneficial_transaction
+        else:
+            return None
 
     def receive_fee(self, transaction_fee):
         """
@@ -73,11 +76,14 @@ class CloudNode:
         return f"Cloud Node - Main Wallet: {self.main_wallet}, Staking Wallet: {self.pledge_wallet}, Reputation: {self.reputation}"
 
 class MinerNode:
+    current_id=1
     def __init__(self, hashing_power, hashing_investment, gamma):
         self.hashing_power = hashing_power  # 算力
         self.hashing_investment = hashing_investment  # 算力投入
         self.gamma = gamma  # 链外单位算力收入
         self.wallet = 0  # 钱包
+        self.id = MinerNode.current_id
+        MinerNode.current_id+=1
 
     def validate(self, cloud_node, block):
         """
@@ -93,7 +99,7 @@ class MinerNode:
         self.wallet += alpha
 
     def __str__(self):
-        return f"Miner Node - Wallet: {self.wallet}"
+        return f"Miner Node - Miner Id: {self.id}, Wallet: {self.wallet}"
 
 class UserNode:
     def __init__(self):

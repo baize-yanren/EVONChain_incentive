@@ -80,6 +80,7 @@ def main01():
     plt.xlabel("x")
     plt.legend(l, loc='lower right')
     plt.ylim(0,1)
+    # plt.xlim(-1,1)
     plt.show()
 
     # fig,xl=plt.subplots()
@@ -108,9 +109,35 @@ def main01():
 def sim(gamma):
     blockchain=[]
     # 生成节点
-    users, clouds, miners = f.generate_nodes(5000, 100, 2000, gamma)
-    
+    n_miner=2000
+    users, clouds, miners = f.generate_nodes(5000, 100, n_miner, gamma)
+    transaction_pool = []
+    fee=[1,2,3,4,5,6,7,8,9,10]
+
+    for i in range(5):
+        # 生成交易
+        transaction_pool = f.generate_transactions(users,100,transaction_pool,fee)
+
+        # 选择打包交易
+        block, transaction_pool=f.pack_and_mine(clouds, miners, transaction_pool, 1)
+        blockchain.append(block)
+        print(len(transaction_pool),block)
+
+'''
+    a_res=[]
+    xm_res=[]
+    x_res=[]
+
+
+        x1,alpha=ia.incentive_allocation(n_miner,gamma,x,test_mode=True)
+        a_res.append(alpha)
+        xm_res.append(np.mean(x1))
+
+        sorted_x=np.sort(x1)
+        y = np.arange(1, len(sorted_x)+1) / len(sorted_x)'''
 
 if __name__ == "__main__":
-    # main01()
-    l=[1,2,3,4,5,6,7,8]
+    main01()
+    # l=[1,2,3,4,5,6,7,8]
+    # for gamma in l:    
+    #     sim(gamma)
