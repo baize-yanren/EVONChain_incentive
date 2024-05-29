@@ -166,75 +166,84 @@ class function:
                 break
 
         block=Block(i,sum_size,sum_fee,blocklist)
-        print(block)
+        # print(block)
         # 矿工节点进行挖矿和验证
         if miner.validate(packer, block):
             packer.receive_fee(block.fee)
             miner.receive_reward(alpha)
         return block
 
+def main():
+    blockchain=[]
+    f=function
+    alpha=1
+    beta=2
+    # 生成节点
+    users, clouds, miners = f.generate_nodes(20, 1, 10, beta)
 
-blockchain=[]
-f=function
-alpha=1
-beta=2
-# 生成节点
-users, clouds, miners = f.generate_nodes(20, 1, 10, beta)
+    mw=[]
+    pw=[]
+    rep=[]
+    x=[]
 
-mw=[]
-pw=[]
-rep=[]
-x=[]
+    for i in range(51):
+        # 生成交易
+        transaction_pool = f.generate_transactions(users,500)
+        # 打包和挖矿
+        blockchain.append(f.pack_and_mine(clouds, miners, transaction_pool, alpha))
+        for cloud in clouds:
+            mw.append(cloud.main_wallet)
+            pw.append(cloud.pledge_wallet)
+            rep.append(cloud.reputation)
+        x.append(i+1)
 
-for i in range(100):
-    # 生成交易
-    transaction_pool = f.generate_transactions(users,500)
-    # 打包和挖矿
-    blockchain.append(f.pack_and_mine(clouds, miners, transaction_pool, alpha))
-    for cloud in clouds:
-        mw.append(cloud.main_wallet)
-        pw.append(cloud.pledge_wallet)
-        rep.append(cloud.reputation)
-    x.append(i+1)
+    # 打印节点信息
+    # for user in users:
+    #     print(user)
+    # for cloud in clouds:
+    #     print(cloud)
+    # for miner in miners:
+    #     print(miner)
+    # print(len(blockchain),len(transaction_pool))
+    
+    '''
+    # 作图
+    # 比例
+    mwd=[mw[0]]
+    pwd=[pw[0]]
+    for i in range(1,100):
+        mwd.append(mw[i]-mw[i-1])
+        pwd.append(pw[i]-pw[i-1])
+    plt.bar(x,mwd,width=-1,label='main wallet',edgecolor='grey',zorder=5,align='edge')
+    plt.bar(x,pwd,width=-1,bottom=mwd,label='pledge wallet',edgecolor='grey',zorder=5,align='edge')
+    plt.tick_params(axis='x',length=0)
+    plt.grid(axis='y',alpha=0.5,ls='--')
+    plt.ylim(0,1600)
+    plt.xlim(0,50)
+    plt.legend(loc='upper left')
+    # plt.tight_layout()
+    # plt.savefig('bar1.png', dpi=600)
+    plt.show()
 
-# 打印节点信息
-for user in users:
-    print(user)
-for cloud in clouds:
-    print(cloud)
-for miner in miners:
-    print(miner)
-print(len(blockchain),len(transaction_pool))
+    # 折线
+    fig,ax1=plt.subplots()
 
-# 作图
-# 比例
-mwd=[mw[0]]
-pwd=[pw[0]]
-for i in range(1,100):
-    mwd.append(mw[i]-mw[i-1])
-    pwd.append(pw[i]-pw[i-1])
-plt.bar(x,mwd,width=-1,label='main wallet',edgecolor='grey',zorder=5,align='edge')
-plt.bar(x,pwd,width=-1,bottom=mwd,label='pledge wallet',edgecolor='grey',zorder=5,align='edge')
-plt.tick_params(axis='x',length=0)
-plt.grid(axis='y',alpha=0.5,ls='--')
-plt.ylim(0,1600)
-plt.xlim(0,50)
-plt.legend(loc='upper left')
-# plt.tight_layout()
-# plt.savefig('bar1.png', dpi=600)
-plt.show()
+    ax1.plot(x,rep,'c',label="reputation")
+    plt.ylim(50,105)
 
-# 折线
-fig,ax1=plt.subplots()
+    ax2=ax1.twinx()
+    ax2.plot(x,pw,label='pledge wallet')
+    ax2.plot(x,mw,label='main wallet')
+    fig.legend(loc='upper left')
+    plt.show()
+    '''
+    return clouds[0].main_wallet,clouds[0].pledge_wallet,clouds[0].reputation
 
-ax1.plot(x,rep,'c',label="reputation")
-plt.ylim(50,105)
+for i in range(10):
+    mw,pw,rep=main()
+    print(mw,pw,mw/pw,rep)
 
-ax2=ax1.twinx()
-ax2.plot(x,pw,label='pledge wallet')
-ax2.plot(x,mw,label='main wallet')
-fig.legend(loc='upper left')
-plt.show()
+
 
 def main1():
     # 模拟交易池

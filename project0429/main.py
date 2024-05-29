@@ -72,16 +72,27 @@ def main():
     plt.ylim(0,1)
     plt.show()
 
-    fig,xl=plt.subplots()
-    xl.bar(l,xm_res,width=0.5)
-    xl.set_xlabel('beta')
-    xl.set_ylabel('average x')
+    # fig,xl=plt.subplots()
+    # xl.bar(l,xm_res,width=0.5)
+    # xl.set_xlabel('gamma')
+    # xl.set_ylabel('average x')
+    # plt.ylim(0.2,0.8)
+    # al=xl.twinx()
+    # al.plot(l,a_res,color="peru",marker='.',markersize=15,markerfacecolor='w')
+    # al.set_ylabel('M0')
+    plt.bar(l,xm_res,width=0.5)
+    plt.xlabel('gamma')
+    plt.ylabel('average x')
     plt.ylim(0.2,0.8)
-    al=xl.twinx()
-    al.plot(l,a_res,color="peru",marker='.',markersize=15,markerfacecolor='w')
-    al.set_ylabel('alpha')
-
+    plt.grid(axis='y',alpha=0.5,ls='--')
     plt.show()
+
+    plt.plot(l,a_res,color="peru",marker='.',markersize=15,markerfacecolor='w')
+    plt.xlabel('gamma')
+    plt.ylabel('M0')
+    plt.grid(axis='y',alpha=0.5,ls='--')
+    plt.show()
+
     print('\n',xm_res,'\n',a_res)
 
 if __name__ == "__main__":
