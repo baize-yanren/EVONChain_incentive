@@ -30,7 +30,7 @@ def x_init(distr:int,num:int):
     ### 3:zipf分布：其均值浮动过大，不做考虑
     '''
     if distr==1:
-        t=[1.0]*num
+        t=[10.0]*num
         x=np.array(t)
     elif distr==2:
         x=np.random.normal(10,1,num)
