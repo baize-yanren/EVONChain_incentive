@@ -60,7 +60,7 @@ def generate_transactions(users,num,transaction_pool,fee_choice):
             transaction_pool.append(transaction)
     return transaction_pool
 
-def pack_and_mine(clouds, miners, transaction_pool, alpha):
+def pack_and_mine(clouds, miners, transaction_pool, alpha, tau=0.01):
     """
     云节点进行一次打包，矿工节点进行挖矿和验证
     输入：
@@ -100,6 +100,6 @@ def pack_and_mine(clouds, miners, transaction_pool, alpha):
     # print(block)
     # 矿工节点进行挖矿和验证
     if miner.validate(packer, block):
-        packer.receive_fee(block.fee)
+        packer.receive_fee(block.fee,tau)
         miner.receive_reward(alpha)
     return block, transaction_pool

@@ -52,6 +52,7 @@ def main01():
     # l=[0.2,0.5,0.8,1.2,1.6,2,3,4,5,6,7,8,9,10]
     l=[1,2,3,4,5,6,7,8]
     x=x_init(1,num)
+    x0=x_init(1,num)
 
     print(x)
     if x is str:
@@ -61,13 +62,13 @@ def main01():
     x_res=[]
 
     for gamma in l:
-        x1,alpha=ia.incentive_allocation(num,gamma,x,test_mode=True)
+        x1,alpha=ia.incentive_allocation(num,gamma,x,x0,test_mode=True)
         a_res.append(alpha)
         xm_res.append(np.mean(x1))
 
         sorted_x=np.sort(x1)
         y = np.arange(1, len(sorted_x)+1) / len(sorted_x)
-        plt.plot(sorted_x,y)
+        # plt.plot(sorted_x,y)
 
         # x=np.array(sorted_x)
         # y=np.array(y)
@@ -76,12 +77,12 @@ def main01():
         # plt.plot(xs,ys)
         
 
-    plt.ylabel("CDF")
-    plt.xlabel("x")
-    plt.legend(l, loc='lower right')
-    plt.ylim(0,1)
-    # plt.xlim(-1,1)
-    plt.show()
+    # plt.ylabel("CDF")
+    # plt.xlabel("x")
+    # plt.legend(l, loc='lower right')
+    # plt.ylim(0,1)
+    # # plt.xlim(-1,1)
+    # plt.show()
 
     # fig,xl=plt.subplots()
     # xl.bar(l,xm_res,width=0.5)
@@ -113,31 +114,37 @@ def sim(gamma):
     users, clouds, miners = f.generate_nodes(5000, 100, n_miner, gamma)
     transaction_pool = []
     fee=[1,2,3,4,5,6,7,8,9,10]
+    M_res=[]
+    pm_res=[]
 
     for i in range(5):
         # 生成交易
         transaction_pool = f.generate_transactions(users,100,transaction_pool,fee)
 
+        # 更新算力，获得对应挖矿奖励值
+        pm=[]
+        p=[]
+        for miner in miners:
+            pm.append(miner.hashing_investment)
+            p.append(miner.hashing_power)
+
+        pm,M0=ia.incentive_allocation(n_miner,gamma,p,pm,test_mode=True)
+        M_res.append(M0)
+        pm_res.append(np.sum(pm))
+
+        # 节点同步算力
+        for i in range(len(miners)):
+            miners[i].hashing_investment=pm[i]
+
         # 选择打包交易
         block, transaction_pool=f.pack_and_mine(clouds, miners, transaction_pool, 1)
         blockchain.append(block)
-        print(len(transaction_pool),block)
+        # print(len(transaction_pool),block)
 
-'''
-    a_res=[]
-    xm_res=[]
-    x_res=[]
-
-
-        x1,alpha=ia.incentive_allocation(n_miner,gamma,x,test_mode=True)
-        a_res.append(alpha)
-        xm_res.append(np.mean(x1))
-
-        sorted_x=np.sort(x1)
-        y = np.arange(1, len(sorted_x)+1) / len(sorted_x)'''
 
 if __name__ == "__main__":
     main01()
     # l=[1,2,3,4,5,6,7,8]
+
     # for gamma in l:    
     #     sim(gamma)

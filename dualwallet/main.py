@@ -17,8 +17,8 @@ class PackingNode:
             self.pledge_wallet += transaction_fee * (1 - self.reputation / 100)
         else:
             # 声誉值达到100后，全部交易费进入主钱包，并转移1%到主钱包
-            self.main_wallet += transaction_fee + self.pledge_wallet * 0.05
-            self.pledge_wallet = self.pledge_wallet * 0.95
+            self.main_wallet += transaction_fee + self.pledge_wallet * 0.01
+            self.pledge_wallet = self.pledge_wallet * 0.99
 
         # 每次打包增加声誉值
         self.reputation = min(self.reputation + 1, 100)
@@ -49,7 +49,7 @@ def packing_simulation(node_count,expected_fee):
 # 模拟打包过程
 node_count = 1
 expected_fee = 1
-r=60
+r=100
 nodes = [PackingNode() for _ in range(node_count)]
 main_w=[]
 p_w=[]

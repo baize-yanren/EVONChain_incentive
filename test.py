@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-# r=100
+r=100
 
 # n=6000
 # t=1
@@ -31,6 +31,8 @@ import matplotlib.pyplot as plt
 # plt.plot(l2,label='t*=1.02')
 # plt.legend(loc='upper right')
 # plt.show()
+
+
 m=6000
 t=1
 r=200
@@ -45,10 +47,10 @@ for k in range(20):
     ak=(k+990)/1000
     
     for i in range(r):
-        # re.append(m*t/100)
+        re.append(m*t/100)
         m-=m*t/100
         t=t*ak
-        re.append(m)
+        # re.append(m)
     print(re)
     if ak==1:
         plt.plot(x,re,label='k='+str(ak),color="b")
@@ -56,4 +58,3 @@ for k in range(20):
         plt.plot(x,re,label='k='+str(ak))
 plt.legend(loc='upper right')
 plt.show()
-

@@ -57,7 +57,7 @@ class CloudNode:
         else:
             return None
 
-    def receive_fee(self, transaction_fee):
+    def receive_fee(self, transaction_fee,tau):
         """
         根据规则获得交易费和声誉值
         """
@@ -67,8 +67,8 @@ class CloudNode:
             self.pledge_wallet += transaction_fee * (1 - self.reputation / 100)
         else:
             # 声誉值达到100后，全部交易费进入主钱包，并转移1%到主钱包
-            self.main_wallet += transaction_fee + self.pledge_wallet * 0.01
-            self.pledge_wallet = self.pledge_wallet * 0.99
+            self.main_wallet += transaction_fee + self.pledge_wallet * tau
+            self.pledge_wallet = self.pledge_wallet * (1-tau)
 
         self.reputation = min(self.reputation + 1, 100)
 
